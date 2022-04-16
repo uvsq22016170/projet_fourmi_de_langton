@@ -22,6 +22,7 @@ taille = 9
 #Variables globales
 Coul = ["black", "white"]
 fourmi_placee = False
+execution = False
 
 ###############################################################################################################################################
 #Fonctions
@@ -45,21 +46,28 @@ def init_fourmi (event):
     else :
         mb.showerror("Erreur", "Une fourmi a déja été placée")
 
+def reconfiguration (val):
+    global fourmi_placee
+    if execution == False:
+        fourmi_placee = False
+        for i in range (taille) :
+            for j in range (taille) :
+                if val == "r":
+                    config[i][j] = rd.randint(0,1)
+                else :
+                    config[i][j] = val
+                canvas.itemconfigure(L_obj[i][j], fill = coul[config[i][j]], outline = coul[config[i][j]])
+    else:
+        mb.showerror("Erreur", "La fourmi avance, veuillez mettre en pause pour effectuer cette action")
+
 def noir ():
-    for i in range (taille) :
-        for j in range (taille) :
-            L_obj[i] += [canvas.create_rectangle((i * coeff, j * coeff), ((i+1) * coeff, (j+1) * coeff), fill = Coul[0], outline = Coul[0])]
+    reconfiguration(0)
 
 def blanc ():
-    for i in range (taille) :
-        for j in range (taille) :
-            L_obj[i] += [canvas.create_rectangle((i * coeff, j * coeff), ((i+1) * coeff, (j+1) * coeff), fill = Coul[1], outline = Coul[1])]
+    reconfiguration(1)
 
-def random ():
-    for i in range (taille):
-        for j in range (taille):
-            config[i][j] = rd.randint(0, 1)
-            canvas.itemconfigure(L_obj[i][j], fill = Coul[config[i][j]], outline = Coul[config[i][j]])
+def aleatoire ():
+    reconfiguration("r")
 
 ###############################################################################################################################################
 #Partie principale
@@ -75,11 +83,17 @@ calc_coeff ()
 canvas = tk.Canvas(racine, height = taille * coeff, width = taille * coeff)
 b_play_pause = tk.Button(racine, text = "Play")
 b_next = tk.Button(racine, text = "Faire une étape")
+b_noir = tk.Button(racine, text = "Configuration noir", command = noir)
+b_blanc = tk.Button(racine, text = "Configuration blanc", command = blanc)
+b_aleatoire = tk.Button(racine, text = "Configuration aléatoire", command = aleatoire)
 
 #Placement des widgets
 canvas.pack(side = "right")
 b_play_pause.pack(side = "top", fill = "x")
 b_next.pack(side = "top", fill = "x")
+b_aleatoire.pack(side = "bottom", fill = "x")
+b_blanc.pack(side = "bottom", fill = "x")
+b_noir.pack(side = "bottom", fill = "x")
 
 #Lien
 canvas.bind("<Button-1>", init_fourmi)
