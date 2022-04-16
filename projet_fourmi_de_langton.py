@@ -20,7 +20,7 @@ taille = 9
 
 ###############################################################################################################################################
 #Variables globales
-Coul = ["black", "white"]
+coul = ["black", "white"]
 fourmi_placee = False
 execution = False
 
