@@ -11,6 +11,7 @@
 #Importation des modules
 import tkinter as tk
 import random as rd
+import tkinter.messagebox as mb
 
 ###############################################################################################################################################
 #Constantes
@@ -20,19 +21,29 @@ taille = 9
 ###############################################################################################################################################
 #Variables globales
 Coul = ["black", "white"]
+fourmi_placee = False
 
 ###############################################################################################################################################
 #Fonctions
 
-def init ():
-    """
-    Initialise la grille
-    """
-    global config, L_obj, coeff, fourmi
+def calc_coeff ():
+    global coeff
     coeff = (min(racine.winfo_screenwidth(), racine.winfo_screenheight())/1.2) / taille
+
+def init ():
+    global config, L_obj
     config = [[0] * taille for i in range(taille)]
-    L_obj = [[] * taille for i in range(taille)]
-    fourmi = [taille/2, taille/2, "N"]
+    L_obj = [[canvas.create_rectangle((i * coeff, j * coeff), ((i+1) * coeff, (j+1) * coeff), fill = coul[config[i][j]], outline = coul[config[i][j]]) for i in range (taille)] for j in range(taille)]
+
+def init_fourmi (event):
+    global fourmi_placee, fourmi, mem
+    if fourmi_placee == False:
+        fourmi = [int(event.y/coeff), int(event.x/coeff), 0]
+        canvas.itemconfigure(L_obj[fourmi[0]][fourmi[1]], fill = "red", outline = "red")
+        fourmi_placee = True
+        mem = ["pas de fourmi"]
+    else :
+        mb.showerror("Erreur", "Une fourmi a déja été placée")
 
 def noir ():
     for i in range (taille) :
@@ -57,8 +68,8 @@ def random ():
 racine = tk.Tk()
 racine.title("Projet fourmi de langton")
 
-#Initialisation
-init()
+#Calcul du coefficient en fonction de la taille de l'écran actuel
+calc_coeff ()
 
 #Creation des widgets
 canvas = tk.Canvas(racine, height = taille * coeff, width = taille * coeff)
@@ -69,6 +80,12 @@ b_next = tk.Button(racine, text = "Faire une étape")
 canvas.pack(side = "right")
 b_play_pause.pack(side = "top", fill = "x")
 b_next.pack(side = "top", fill = "x")
+
+#Lien
+canvas.bind("<Button-1>", init_fourmi)
+
+#Initialisation
+init()
 
 #Boucle principale
 racine.mainloop()
