@@ -13,6 +13,7 @@ import tkinter as tk
 import random as rd
 import tkinter.messagebox as mb
 
+
 ###############################################################################################################################################
 #Constantes
 #taille de base de la grille
@@ -23,7 +24,7 @@ delai = 0
 
 ###############################################################################################################################################
 #Variables globales
-coul = ["black", "white"]
+coul = ["black", "white","red","blue"]
 stop = False
 fourmi_placee = False
 execution = False
@@ -72,6 +73,32 @@ def blanc ():
 
 def aleatoire ():
     reconfiguration("r")
+    liste_move=[]
+    for i in range(taille):
+        for j in range(taille):
+            if config[fourmi[i]][fourmi[j]] == coul[1] :
+                fourmi[2] = 1
+                
+                config[i][j]= "black"
+                liste_move.append("G")
+            elif int(config[fourmi[i]][fourmi[j]]) == coul[0] :
+                fourmi[2]= 3
+                config[i][j]= coul[2]
+                liste_move.append("D")
+            elif int(config[fourmi[i]][fourmi[j]]) == coul[2] :
+                fourmi = 0
+                config[i][j]=coul[3]
+                liste_move.append("D")
+            elif int(config[fourmi[i]][fourmi[j]]) == coul[3] :
+                fourmi = 2
+                config[i][j]=coul[1]
+                liste_move.append("G")    
+            else :
+                mb.showerror("Il y'a pas de fourmi dans la configuration")    
+            
+
+                
+
 
 def deplacement ():
     global mem, execution
