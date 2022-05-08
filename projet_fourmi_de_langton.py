@@ -9,9 +9,12 @@
 
 ###############################################################################################################################################
 #Importation des modules
+#from curses import savetty
 import tkinter as tk
 import random as rd
 import tkinter.messagebox as mb
+from tkinter.filedialog import askopenfile, asksaveasfile
+
 
 import numpy as np
 import itertools
@@ -32,7 +35,7 @@ coul = ["black", "white"]
 stop = False
 fourmi_placee = False
 execution = False
-
+save = False
 
 ###############################################################################################################################################
 #Fonctions
@@ -137,6 +140,28 @@ def retour ():
     else :
         mb.showerror("Erreur", "La fourmi avance, veuillez mettre en pause pour effectuer cette action")
 
+def sauvegarde():
+    global execution
+    global save
+    if execution == False:
+        fichier = asksaveasfile(title="Sauvegarder", filetypes=[("Script Python", ".py")], defaultextension=".py")
+        f = open(fichier.name,"a")
+        f.write(str(mem))
+        f.close()
+        save = True
+    elif execution == True:
+        mb.showerror("Erreur","La fourmi avance, veuillez mettre en pause pour effectuer cette action")
+    pass
+
+def charger():
+    global save
+    if save == True:
+        fichier = askopenfile(filetypes=[("Script python",".py")],mode="r")
+        f = open(fichier.name,"r")
+        f.read()
+    elif save == False:
+        mb.showerror("Erreur","Vous n'avez fait aucune sauvegarde")
+
 ###############################################################################################################################################
 #Partie principale
 
@@ -155,8 +180,10 @@ b_retour = tk.Button(racine, text = "Retourner en arrière", command = retour)
 b_noir = tk.Button(racine, text = "Configuration noir", command = noir)
 b_blanc = tk.Button(racine, text = "Configuration blanc", command = blanc)
 b_aleatoire = tk.Button(racine, text = "Configuration aléatoire", command = aleatoire)
-
+b_sauvegarde = tk.Button(racine,text="Sauvegarde", command= sauvegarde)
+b_charger = tk.Button(racine,text="Charger", command= charger)
 #Placement des widgets
+
 canvas.pack(side = "right")
 b_play_pause.pack(side = "top", fill = "x")
 b_next.pack(side = "top", fill = "x")
@@ -164,7 +191,8 @@ b_retour.pack(side = "top", fill = "x")
 b_aleatoire.pack(side = "bottom", fill = "x")
 b_blanc.pack(side = "bottom", fill = "x")
 b_noir.pack(side = "bottom", fill = "x")
-
+b_sauvegarde.pack(side="bottom",fill="x")
+b_charger.pack(side="bottom",fill="x")
 #Lien
 canvas.bind("<Button-1>", init_fourmi)
 
